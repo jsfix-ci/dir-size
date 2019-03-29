@@ -2,7 +2,7 @@
 
 import * as program from 'commander';
 import * as prettyBytes from 'pretty-bytes';
-import { defaultTo } from 'ramda';
+import { sortBy, defaultTo, always, when } from 'ramda';
 import { dirSize } from '../lib/dir-size';
 import * as spinner from '../lib/progress';
 import { ProgressCallback, ProgressType } from '../types';
@@ -13,7 +13,7 @@ const MAX_LOG_DEPTH = 10;
 const cmd = program
     .version('1.0.0')
     .description('calculates diskspace per folder')
-    .option('-s, --sort', 'Sorts by size')
+    .option('-s, --size', 'Sorts by size')
     .parse(process.argv);
 
 const args = cmd.args;
@@ -48,15 +48,17 @@ dirSize(dir, callback)
     .then(output => {
         spinner.stop();
 
-        console.log(`${chalk.bold(dir)}: ${chalk.cyan(prettyBytes(output.size))}`);
-        console.log(`- files:   ${chalk.cyan(prettyBytes(output.sizeOwnFiles))}`);
-        console.log(`- subdirs: ${chalk.cyan(prettyBytes(output.size - output.sizeOwnFiles))}`);
-        if (output.subdirs.length > 0) {
-            console.log(chalk.grey('Subdirectories:'));
-            output.subdirs.forEach(subDir => {
-                console.log(`${chalk.bold(subDir.name)}: ${chalk.cyan(prettyBytes(subDir.size))}`);
-            });
-        }
+        console.log(`Total: ${chalk.bold(dir)}: ${chalk.cyan(prettyBytes(output.size))}`);
+        console.log(`${chalk.bold('files')}: ${chalk.cyan(prettyBytes(output.sizeOwnFiles))}`);
+
+        const subdirs = sort ?
+            sortBy(x => -x.size, output.subdirs) :
+            output.subdirs;
+
+        subdirs.forEach(subDir => {
+            const pct = (100 * subDir.size / output.size).toFixed(1);
+            console.log(`${chalk.bold(subDir.name)}: ${chalk.cyan(prettyBytes(subDir.size))} (${pct}%)`);
+        });
     })
     .catch(err => {
         spinner.stop();
