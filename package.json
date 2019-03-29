@@ -3,10 +3,32 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "bin": "dist/bin/diskspace.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "ora": "^3.2.0",
+    "pretty-bytes": "^5.1.0",
+    "ramda": "^0.26.1"
+  },
+  "devDependencies": {
+    "@types/node": "^11.12.1",
+    "@types/ora": "^3.2.0",
+    "@types/pretty-bytes": "^5.1.0",
+    "@types/ramda": "^0.26.5",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.3.4000"
+  },
+  "scripts": {
+    "build": "yarn run transpile",
+    "transpile": "tsc",
+    "transpile-watch": "tsc -w",
+    "clean": "rimraf dist"
+  },
+  "engines": {
+    "node": ">=8"
+  }
 }
