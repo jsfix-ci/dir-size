@@ -13,11 +13,11 @@ const MAX_LOG_DEPTH = 10;
 const cmd = program
     .version('1.0.0')
     .description('calculates diskspace per folder')
-    .option('-s, --size', 'Sorts by size')
+    .option('-s,--size', 'Sorts by size', false)
     .parse(process.argv);
 
 const args = cmd.args;
-const sort: boolean = defaultTo(false, cmd.sort);
+const sort = cmd.size;
 
 if (args.length === 0) {
     console.log('ERROR: missing directory');
