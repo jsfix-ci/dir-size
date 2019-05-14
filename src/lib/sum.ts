@@ -1,3 +1,3 @@
-export function sum(numbers: number[]) {
-    return numbers.reduce((acc, num) => acc + num, 0);
-}
+import { add, reduce } from "ramda";
+
+export const sum = reduce<number, number>(add, 0);
