@@ -1,9 +1,11 @@
 {
   "name": "diskspace",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
-  "bin": "dist/bin/diskspace.js",
+  "bin": {
+    "diskspace": "dist/bin/diskspace.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
