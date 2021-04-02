@@ -1,6 +1,8 @@
 import { dirSize } from './lib/dir-size';
-import { ProgressCallback } from './types';
+import { DirStat, ProgressCallback } from './types';
 
-export = function(dir: string, callback: ProgressCallback) {
+export default dirStat;
+
+function dirStat(dir: string, callback: ProgressCallback): Promise<DirStat> {
     return dirSize(dir, callback, 0);
 }

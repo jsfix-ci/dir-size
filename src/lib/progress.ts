@@ -1,10 +1,11 @@
-import { default as ora } from "ora";
+import { default as ora } from 'ora';
 
 const spinner = ora();
 
-export const start = (text?: string) => spinner.start(text);
-export const stop = () => spinner.stop();
-export const setText = (text: string) => {
+export const start = (text?: string): ora.Ora => spinner.start(text);
+export const stop = (): ora.Ora => spinner.stop();
+export const setText = (text: string): ora.Ora => {
     spinner.text = text;
     spinner.render();
+    return spinner;
 };

@@ -1,9 +1,5 @@
-import * as fs from 'fs';
-import { promisify } from 'util';
+import { stat } from 'fs-extra';
 
-const stat = promisify(fs.stat);
-
-export async function getFileSize(file: string) {
-    return stat(file)
-        .then(stat => stat.size);
+export async function getFileSize(file: string): Promise<number> {
+    return (await stat(file)).size;
 }

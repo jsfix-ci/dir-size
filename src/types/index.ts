@@ -2,7 +2,7 @@ export interface DirStat {
     name: string;
     size: number;
     sizeOwnFiles: number;
-    subdirs: DirStat[]
+    subdirs: DirStat[];
 }
 
 export interface DirEntries {
