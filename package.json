@@ -1,12 +1,23 @@
 {
-  "name": "diskspace",
+  "name": "dir-size",
   "version": "1.1.0",
-  "description": "calculates used diskspace for a folder",
-  "main": "index.js",
-  "bin": {
-    "diskspace": "dist/bin/diskspace.js"
-  },
-  "keywords": [],
+  "description": "Calculates size of a directory and its contents",
+  "main": "dist/index.js",
+  "bin": "dist/bin/dir-size.js",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "directory",
+    "folder",
+    "size",
+    "space",
+    "usage",
+    "stat",
+    "du",
+    "disk",
+    "usage"
+  ],
   "author": "Sander van Driel",
   "license": "ISC",
   "dependencies": {
@@ -44,9 +55,9 @@
     "build": "tsc",
     "clean": "rimraf dist coverage",
     "dev": "nodemon -d 0.2 src/index.ts",
-    "fix": "eslint \"src/**/*.{ts,json}\" --fix",
-    "lint": "eslint \"src/**/*.{ts,json}\"",
-    "prepublishOnly": "npm run verify",
+    "fix": "eslint \"**/*.ts\" --fix",
+    "lint": "eslint \"**/*.ts\"",
+    "xprepublishOnly": "npm run verify",
     "start": "node dist/index.js",
     "test": "jest",
     "verify": "npm run test && npm run lint && npm run clean && npm run build",

@@ -1,5 +1,3 @@
-import { stat } from 'fs-extra';
+import { lstat } from 'fs-extra';
 
-export async function getFileSize(file: string): Promise<number> {
-    return (await stat(file)).size;
-}
+export const getFileSize = async (file: string): Promise<number> => (await lstat(file)).size;

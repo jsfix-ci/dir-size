@@ -1,5 +1,5 @@
 import pLimit from 'p-limit';
-import { prop, sum } from 'ramda';
+import { sum } from 'ramda';
 
 import { getDirEntries } from '../lib/get-dir-entries';
 import { getFileSize } from '../lib/get-file-size';
@@ -8,14 +8,19 @@ import { DirStat, ProgressCallback, ProgressType } from '../types';
 export async function dirSize(dir: string, callback?: ProgressCallback, depth = 0): Promise<DirStat> {
     const limit = pLimit(2);
     if (callback) {
-        callback(ProgressType.Enter, dir, depth, 0);
+        callback({
+            type: ProgressType.Enter,
+            name: dir,
+            depth,
+            size: 0
+        });
     }
 
     const entries = await getDirEntries(dir);
-    const fileSizes = Promise.all(entries.files.map(getFileSize));
+    const fileSizes = await Promise.all(entries.files.map(getFileSize));
     const dirStat = await Promise.all(entries.dirs.map(dir => limit(() => dirSize(dir, callback, depth + 1))));
 
-    const totalFileSize = sum(await fileSizes);
+    const totalFileSize = sum(fileSizes);
     const totalDirSize = total(dirStat);
     const totalSize = totalFileSize + totalDirSize;
     const result: DirStat = {
@@ -26,13 +31,15 @@ export async function dirSize(dir: string, callback?: ProgressCallback, depth = 
     };
 
     if (callback) {
-        callback(ProgressType.Exit, dir, depth, totalFileSize);
+        callback({
+            type: ProgressType.Exit,
+            name: dir,
+            depth,
+            size: totalFileSize
+        });
     }
 
     return result;
 }
 
-export function total(stats: DirStat[]): number {
-    const sizes = stats.map(prop('size'));
-    return sum(sizes);
-}
+const total = (stats: DirStat[]): number => stats.reduce((acc, stat) => acc + stat.size, 0);

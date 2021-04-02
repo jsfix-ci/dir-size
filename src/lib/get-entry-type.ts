@@ -1,15 +1,12 @@
-import { stat } from 'fs-extra';
+import { lstat } from 'fs-extra';
 
 export async function getEntryType(filePath: string): Promise<'symlink' | 'file' | 'dir'> {
     try {
-        const stats = await stat(filePath);
+        const stats = await lstat(filePath);
 
-        if (stats.isSymbolicLink()) {
-            return 'symlink';
-        }
-        return stats.isFile() ? 'file' : 'dir';
+        return stats.isFile() || stats.isSymbolicLink() ? 'file' : 'dir';
     } catch {
         // Probably a symlink with invalid destination
-        return 'symlink' as const;
+        return 'symlink';
     }
 }

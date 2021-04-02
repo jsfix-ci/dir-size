@@ -15,4 +15,11 @@ export enum ProgressType {
     Exit = 'EXIT'
 }
 
-export type ProgressCallback = (type: ProgressType, name: string, depth: number, size: number) => void;
+export interface ProgressCallbackOptions {
+    type: ProgressType;
+    name: string;
+    depth: number;
+    size: number;
+}
+
+export type ProgressCallback = (opts: ProgressCallbackOptions) => void;
