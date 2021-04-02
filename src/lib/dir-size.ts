@@ -1,12 +1,17 @@
+import os from 'os';
 import pLimit from 'p-limit';
-import { sum } from 'ramda';
+import { pluck, sum } from 'ramda';
 
 import { getDirEntries } from '../lib/get-dir-entries';
-import { getFileSize } from '../lib/get-file-size';
 import { DirStat, ProgressCallback, ProgressType } from '../types';
 
-export async function dirSize(dir: string, callback?: ProgressCallback, depth = 0): Promise<DirStat> {
-    const limit = pLimit(2);
+const cpuCount = os.cpus().length;
+const limit = pLimit(cpuCount);
+
+export default async function dirSize(dir: string, callback?: ProgressCallback, depth = 0): Promise<DirStat> {
+    // Limit concurrent calls dependent on the depth
+    const one = pLimit(Math.max(1, Math.pow(2, 5 - depth)));
+
     if (callback) {
         callback({
             type: ProgressType.Enter,
@@ -16,18 +21,22 @@ export async function dirSize(dir: string, callback?: ProgressCallback, depth = 
         });
     }
 
-    const entries = await getDirEntries(dir);
-    const fileSizes = await Promise.all(entries.files.map(getFileSize));
-    const dirStat = await Promise.all(entries.dirs.map(dir => limit(() => dirSize(dir, callback, depth + 1))));
+    // Get directory entries (including file sizes)
+    const entries = await limit(() => getDirEntries(dir));
 
-    const totalFileSize = sum(fileSizes);
-    const totalDirSize = total(dirStat);
-    const totalSize = totalFileSize + totalDirSize;
+    const fileSizes = pluck('size', entries.files);
+
+    // Recursive calls to subdirectories
+    const subdirs = await Promise.all(entries.dirs.map(dir => one(() => dirSize(dir.name, callback, depth + 1))));
+
+    const sizeOwnFiles = sum(fileSizes);
+    const totalDirSize = total(subdirs);
+    const size = sizeOwnFiles + totalDirSize;
     const result: DirStat = {
         name: dir,
-        size: totalSize,
-        sizeOwnFiles: totalFileSize,
-        subdirs: dirStat
+        size,
+        sizeOwnFiles,
+        subdirs
     };
 
     if (callback) {
@@ -35,7 +44,7 @@ export async function dirSize(dir: string, callback?: ProgressCallback, depth = 
             type: ProgressType.Exit,
             name: dir,
             depth,
-            size: totalFileSize
+            size: sizeOwnFiles
         });
     }
 

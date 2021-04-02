@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import chalk from 'chalk';
 import program from 'commander';
-import ora from 'ora';
 import fs from 'fs-extra';
+import ora from 'ora';
 import path from 'path';
 import prettyBytes from 'pretty-bytes';
 import { ascend, prop, sort } from 'ramda';
 
-import { dirSize } from '../lib/dir-size';
+import dirSize from '..';
 import { ProgressCallback, ProgressType } from '../types';
 
 const MAX_LOG_DEPTH = 10;

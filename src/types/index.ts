@@ -5,9 +5,15 @@ export interface DirStat {
     subdirs: DirStat[];
 }
 
+export interface EntryInfo {
+    name: string;
+    type: 'symlink' | 'file' | 'dir';
+    size: number;
+}
+
 export interface DirEntries {
-    files: string[];
-    dirs: string[];
+    files: EntryInfo[];
+    dirs: EntryInfo[];
 }
 
 export enum ProgressType {
