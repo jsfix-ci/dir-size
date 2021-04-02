@@ -1,9 +1,11 @@
 {
-  "name": "dir-size",
+  "name": "@sandervandriel/dir-size",
   "version": "1.1.0",
   "description": "Calculates size of a directory and its contents",
   "main": "dist/index.js",
-  "bin": "dist/bin/dir-size.js",
+  "bin": {
+    "dir-size": "dist/bin/dir-size.js"
+  },
   "files": [
     "src"
   ],
