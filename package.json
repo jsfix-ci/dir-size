@@ -57,7 +57,7 @@
     "dev": "nodemon -d 0.2 src/index.ts",
     "fix": "eslint \"**/*.ts\" --fix",
     "lint": "eslint \"**/*.ts\"",
-    "xprepublishOnly": "npm run verify",
+    "prepublishOnly": "npm run verify",
     "start": "node dist/index.js",
     "test": "jest",
     "verify": "npm run test && npm run lint && npm run clean && npm run build",
